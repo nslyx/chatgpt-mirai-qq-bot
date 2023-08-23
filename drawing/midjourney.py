@@ -23,10 +23,8 @@ class Midjourney(DrawingAPI):
             # "timeout": f'{config.midjourney.draw_timeout}'
         }
 
-        resp = await httpx.AsyncClient(timeout=config.midjourney.timeout).post(f"{config.midjourney.api_url}?token={config.midjourney.token}",
+        resp = await httpx.AsyncClient(timeout=config.midjourney.timeout, verify=False).post(f"{config.midjourney.api_url}?token={config.midjourney.token}",
                                                                             json=payload, headers=self.headers)
-
-        logger.debug(f"Midjourney text_to_img {resp.text()}")
 
         resp.raise_for_status()
         r = resp.json()

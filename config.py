@@ -534,7 +534,7 @@ class Midjourney(BaseModel):
     """内置提示词，所有的画图内容都会加上这些提示词"""
     draw_timeout: int = 480
     """作画超时时间"""
-    timeout: float = 10.0
+    timeout: float = 300.0
     """超时时间"""
 
     class Config(BaseConfig):
