@@ -525,6 +525,20 @@ class SDWebUI(BaseModel):
         extra = Extra.allow
 
 
+class Midjourney(BaseModel):
+    api_url: str = 'https://api.zhishuyun.com/midjourney/imagine'
+    """知数云 API 地址，如：https://api.zhishuyun.com/midjourney/imagine"""
+    token: str
+    """知数云 API 令牌，如：637b5071cfe5404b988facef28bb0de7""" 
+    prompt_prefix: str = 'masterpiece, best quality, illustration, extremely detailed 8K wallpaper'
+    """内置提示词，所有的画图内容都会加上这些提示词"""
+    timeout: int = 480
+    """超时时间"""
+
+    class Config(BaseConfig):
+        extra = Extra.allow
+
+
 class Config(BaseModel):
     # === Platform Settings ===
     onebot: Optional[Onebot] = None
@@ -558,6 +572,7 @@ class Config(BaseModel):
 
     # === External Utilities ===
     sdwebui: Optional[SDWebUI] = None
+    midjourney: Optional[Midjourney] = None
 
     def scan_presets(self):
         for keyword, path in self.presets.keywords.items():
