@@ -530,7 +530,7 @@ class Midjourney(BaseModel):
     """知数云 API 地址，如：https://api.zhishuyun.com/midjourney/imagine"""
     token: str
     """知数云 API 令牌，如：637b5071cfe5404b988facef28bb0de7""" 
-    prompt_prefix: str = 'masterpiece, best quality, illustration, extremely detailed 8K wallpaper'
+    prompt_prefix: str
     """内置提示词，所有的画图内容都会加上这些提示词"""
     draw_timeout: int = 480
     """作画超时时间"""

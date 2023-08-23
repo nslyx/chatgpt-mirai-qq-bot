@@ -1,5 +1,6 @@
 from typing import List
 import base64
+import aiohttp
 import httpx
 from graia.ariadne.message.element import Image
 from loguru import logger
@@ -12,25 +13,28 @@ class Midjourney(DrawingAPI):
     def __init__(self):
         self.headers = {
             "Accept": "application/json",
-            "Content-type": "application/json"
+            "Content-Type": "application/json"
         }
 
     async def text_to_img(self, prompt):
         payload = {
             "action": "generate",
-            'prompt': f'{config.midjourney.prompt_prefix}, {prompt}',
-            "timeout": f'{config.midjourney.draw_timeout}',
+            'prompt': f'{config.midjourney.prompt_prefix}, {prompt}'
+            # "timeout": f'{config.midjourney.draw_timeout}'
         }
 
         resp = await httpx.AsyncClient(timeout=config.midjourney.timeout).post(f"{config.midjourney.api_url}?token={config.midjourney.token}",
                                                                             json=payload, headers=self.headers)
 
+        logger.debug(f"Midjourney text_to_img {resp.text()}")
+
         resp.raise_for_status()
         r = resp.json()
 
-        logger.debug(f"Midjourney text_to_img {r}")
+        image_url = r.get("image_url")
+        logger.debug(f"[Midjourney Image] Response: {image_url}")
 
-        return [Image(base64=i) for i in r.get('images', [])]
+        return [await self.__download_image(image_url)]
 
     # Todo:// 重写 img_to_img 方法，不过目前也用不到...
     async def img_to_img(self, init_images: List[Image], prompt=''):
@@ -67,3 +71,9 @@ class Midjourney(DrawingAPI):
         resp.raise_for_status()
         r = resp.json()
         return [Image(base64=i) for i in r.get('images', [])]
+
+    async def __download_image(self, url) -> GraiaImage:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+                if resp.status == 200:
+                    return GraiaImage(data_bytes=await resp.read())
