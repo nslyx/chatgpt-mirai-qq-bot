@@ -19,7 +19,7 @@ from adapter.claude.slack import ClaudeInSlackAdapter
 from adapter.google.bard import BardAdapter
 from adapter.ms.bing import BingAdapter
 from adapter.xunfei.xinghuo import XinghuoAdapter
-from drawing import DrawingAPI, SDWebUI as SDDrawing, OpenAI as OpenAIDrawing
+from drawing import DrawingAPI, SDWebUI as SDDrawing, OpenAI as OpenAIDrawing, Midjourney as MidjourneyDrawing
 from adapter.quora.poe import PoeBot, PoeAdapter
 from adapter.thudm.chatglm_6b import ChatGLM6BAdapter
 from constants import config
@@ -115,7 +115,10 @@ class ConversationContext:
         self.type = _type
 
         # 没有就算了
-        if config.sdwebui:
+        if config.midjourney:
+            self.drawing_adapter = MidjourneyDrawing()
+        # if config.sdwebui:
+        elif config.sdwebui:
             self.drawing_adapter = SDDrawing()
         elif config.bing.use_drawing:
             with contextlib.suppress(NoAvailableBotException):
