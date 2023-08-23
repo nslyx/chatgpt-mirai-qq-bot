@@ -22,12 +22,6 @@ class Midjourney(DrawingAPI):
             "timeout": f'{config.midjourney.draw_timeout}',
         }
 
-        for key, value in config.sdwebui.dict(exclude_none=True).items():
-            if isinstance(value, bool):
-                payload[key] = 'true' if value else 'false'
-            else:
-                payload[key] = value
-
         resp = await httpx.AsyncClient(timeout=config.midjourney.timeout).post(f"{config.midjourney.api_url}?token={config.midjourney.token}",
                                                                             json=payload, headers=self.headers)
 
