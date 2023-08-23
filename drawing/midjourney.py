@@ -1,8 +1,8 @@
 from typing import List
 import base64
 import httpx
-import requests
 from graia.ariadne.message.element import Image
+from loguru import logger
 
 from constants import config
 from .base import DrawingAPI
@@ -28,15 +28,13 @@ class Midjourney(DrawingAPI):
             else:
                 payload[key] = value
 
-        # url = "https://api.zhishuyun.com/midjourney/imagine?token=637b5071cfe5404b988facef28bb0de7"
-        # response = requests.post(url, json=payload, headers=headers)
-
         resp = await httpx.AsyncClient(timeout=config.midjourney.timeout).post(f"{config.midjourney.api_url}?token={config.midjourney.token}",
                                                                             json=payload, headers=self.headers)
-        print(resp.json())
 
         resp.raise_for_status()
         r = resp.json()
+
+        logger.debug(f"Midjourney text_to_img {r}")
 
         return [Image(base64=i) for i in r.get('images', [])]
 

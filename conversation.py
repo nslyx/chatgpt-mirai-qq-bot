@@ -117,6 +117,7 @@ class ConversationContext:
         # 没有就算了
         if config.midjourney:
             self.drawing_adapter = MidjourneyDrawing()
+            logger.debug(f"Set Drawing_adapter MidjourneyDrawing")
         # if config.sdwebui:
         elif config.sdwebui:
             self.drawing_adapter = SDDrawing()
