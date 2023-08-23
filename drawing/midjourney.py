@@ -72,8 +72,8 @@ class Midjourney(DrawingAPI):
         r = resp.json()
         return [Image(base64=i) for i in r.get('images', [])]
 
-    async def __download_image(self, url) -> GraiaImage:
+    async def __download_image(self, url) -> Image:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as resp:
                 if resp.status == 200:
-                    return GraiaImage(data_bytes=await resp.read())
+                    return Image(data_bytes=await resp.read())
